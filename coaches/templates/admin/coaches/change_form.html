@@ -1,0 +1,41 @@
+{% extends "admin/change_form.html" %}
+{% load static %}
+{% load admin_urls %}
+{% load i18n %}
+
+{% block after_fieldset %}
+  {{ block.super }}
+  <div class="form-row">
+    <div class="form-col">
+      {% if form.instance.intro_video %}
+        <video width="320" height="240" controls>
+          <source src="{{ form.instance.intro_video.url }}" type="{{ form.instance.intro_video.content_type }}">
+          Your browser does not support the video tag.
+        </video>
+        <a class="deletelink" href="{% url 'admin:coaches_coach_delete_video' form.instance.id %}">
+          <input type="button" value="Delete Video">
+        </a>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}
+
+
+{% block submit_buttons_bottom %}
+<div class="submit-row">
+{% if show_save %}
+    <input type="submit" value="{{ save_label }}" class="default" name="_save" />
+{% endif %}
+{% if show_save_as_new %}<input type="submit" value="{% trans 'Save as new' %}" name="_saveasnew" />{% endif %}
+{% if show_save_and_add_another %}<input type="submit" value="{% trans 'Save and add another' %}" name="_addanother" />{% endif %}
+{% if show_delete_link %}
+    <p class="deletelink-box">
+        {% if original.pk %}
+        <a href="{% url opts|admin_urlname:'delete' original.pk|admin_urlquote %}" class="deletelink">
+            {% trans "Delete" %}
+        </a>
+        {% endif %}
+    </p>
+{% endif %}
+</div>
+{% endblock %}

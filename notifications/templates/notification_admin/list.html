@@ -1,0 +1,26 @@
+{% extends 'admin/change_list.html' %}
+{% load i18n %}
+
+
+{% block userlinks %}
+<div id="user-tools">
+    {% if user.is_active and user.is_staff %}
+    <a href="{% url 'admin:password_change' %}">{% trans 'Change password' %}</a> |
+    {% endif %}
+    <a href="{% url 'admin:logout' %}">{% trans 'Log out' %}</a>
+</div>
+{% endblock %}
+
+
+{% block object-tools %}
+<!-- Remove add button on change_list.html -->
+{% endblock %}
+
+
+
+{% block content %}
+
+{% include './form.html' %}
+
+{{block.super}}
+{% endblock %}

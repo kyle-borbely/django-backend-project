@@ -1,0 +1,106 @@
+.select-dropdown {
+
+    width: 30em;
+    margin-right: 20px;
+
+}
+
+.btn-assign-coach {
+    background-color: #417690;
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    float: right;
+    margin-top: 20px;
+}
+
+.num-sessions {
+    width: 150px;
+    text-align: left;
+    margin-right: 20px;
+}
+
+.numsession {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    padding: 15px 0;
+}
+
+.select-coach {
+    width: 150px;
+    text-align: left;
+    margin-right: 20px;
+}
+
+.select_coach {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    padding: 15px 0;
+}
+
+.client-name {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 372px;
+    padding: 5px;
+    background-color: #fff;
+    margin-right: 20px;
+}
+
+.client_name {
+    width: 150px;
+    text-align: left;
+    margin-right: 20px;
+}
+
+.clientname {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    border-top: 1px solid #eee;
+    padding: 15px 0;
+}
+
+.heading1 {
+    color: #666;
+    font-size: 20px;
+}
+
+#user-tools {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-top: 20px;
+    margin-right: 20px;
+    text-align: right;
+}
+
+.header {
+    padding: 0;
+}
+
+.custom-navbar {
+    background-color: #79aec8;
+    padding: 8px 15px;
+    border-radius: 4px;
+    margin-bottom: 0;
+    color: white;
+}
+
+.button-style {
+    margin-left: 150px;
+    margin-top: 10px;
+}
+
+.btn-report {
+    padding: 8px 40px;
+    margin-right: 20px;
+    margin-left: 20px;
+    color: white !important;
+    border-radius: 4px;
+    background: #417690;
+}

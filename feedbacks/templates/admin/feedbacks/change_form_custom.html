@@ -1,0 +1,74 @@
+{% extends "admin/change_form.html" %}
+{% load static %}
+{% load admin_urls %}
+{% load i18n %}
+
+{% block extrahead %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Change the "Save" button text to "Send"
+    const saveButton = document.querySelector('input[name="_save"]');
+    if (saveButton) {
+        saveButton.value = '{% trans "Send" %}';
+    }
+
+    // Remove the "Save and continue editing" button
+    const saveContinueButton = document.querySelector('input[name="_continue"]');
+    if (saveContinueButton) {
+        saveContinueButton.remove();
+    }
+
+    // Optional: Remove the "Save and add another" button
+    // const saveAddAnotherButton = document.querySelector('input[name="_addanother"]');
+    // if (saveAddAnotherButton) {
+    //     saveAddAnotherButton.remove();
+    // }
+
+    // Remove the "Delete" button if the object is new
+    const deleteButton = document.querySelector('.deletelink-box a.deletelink');
+    if (deleteButton) {
+        const objectID = document.querySelector('#id_pk').value;
+        if (objectID === '') {
+            deleteButton.remove();
+        }
+    }
+});
+</script>
+
+{% endblock %}
+
+{% block breadcrumbs %}
+    <div class="breadcrumbs">
+        <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+        &rsaquo; <a href="{% url 'admin:feedbacks_feedback_changelist' %}">{% trans 'Feedbacks' %}</a>
+        {% if original %}
+            &rsaquo; {% trans 'Response' %}
+        {% else %}
+            &rsaquo; {% trans 'Add feedback' %}
+        {% endif %}
+    </div>
+{% endblock %}
+
+
+{% block object-tools %}
+    {% if change %}
+
+        <!-- Remove the "History" button -->
+        {% for button in standard_object_tools %}
+            {% if button.func_name != 'history_button' %}
+                {{ button }}
+            {% endif %}
+        {% endfor %}
+
+    {% endif %}
+{% endblock %}
+
+{% block submit_buttons_bottom %}
+<div class="submit-row">
+{% if show_save %}
+    <input type="submit" value="{{ save_label }}" class="default" name="_save" />
+{% endif %}
+{% if show_save_as_new %}<input type="submit" value="{% trans 'Save as new' %}" name="_saveasnew" />{% endif %}
+{% if show_save_and_add_another %}<input type="submit" value="{% trans 'Save and add another' %}" name="_addanother" />{% endif %}
+</div>
+{% endblock %}

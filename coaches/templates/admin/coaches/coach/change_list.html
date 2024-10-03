@@ -1,0 +1,10 @@
+{% extends "admin/change_list.html" %}
+
+{% block object-tools-items %}
+    <li>
+        <a href="{% url 'admin:coaches_coach_add' %}" class="addlink">
+            <i class="fa fa-plus"></i>
+            Add Coach
+        </a>
+    </li>
+{% endblock %}

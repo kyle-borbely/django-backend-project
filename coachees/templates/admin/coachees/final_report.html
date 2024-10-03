@@ -1,0 +1,437 @@
+{% extends 'admin/base.html' %}
+{% load static %}
+{% load admin_urls %}
+{% load i18n %}
+{% block title %}
+{{ title }} Session Report | {% trans 'Sloan Leaders' %}
+{% endblock %}
+
+{% block extrahead %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/admin_style.css' %}">
+{% endblock %}
+
+{% block branding %}
+<div class="header">
+    <div id="branding">
+        <h1 id="site-name"><a href="/admin/">{% trans 'Sloan Leaders' %}</a></h1>
+    </div>
+    <div id="user-tools">
+        {% trans 'WELCOME,' %}
+        <strong>{{ user.username }}.</strong>
+        <a href="/">{% trans 'VIEW SITE' %}</a> /
+        <a href="/admin/password_change/">{% trans 'CHANGE PASSWORD' %}</a> /
+        <a href="/admin/logout/">{% trans 'LOG OUT' %}</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block breadcrumbs %}
+
+<div class="breadcrumbs">
+    <a href="/admin/">{% trans 'Home' %}</a>
+    › <a href="/admin/coachees/">{% trans 'Coachees' %}</a>
+    › <a href="/admin/coachees/coachee/">{% trans 'List of all coachees' %}</a>
+    › <a href="/admin/coachees/coachee/{{coachee.id}}/change/">{{coachee.first_name}}</a>
+    › {% trans 'Coaching report' %}
+</div>
+{% endblock %}
+
+
+{% block content %}
+<style>
+    .title {
+        font-size: 15px;
+        display: inline-block;
+        margin-right: 1px;
+        margin-left: 30px;
+        margin-top: 20px;
+        margin-bottom: 15px;
+    }
+
+
+    .content {
+        margin-left: 155px;
+        display: inline-block;
+    }
+
+    .p-heading {
+        font-size: 16px;
+        margin-top: 20px;
+    }
+
+    .progress-container {
+        display: flex;
+        align-items: center;
+        margin-top: 20px;
+    }
+
+    .progress-bar-container {
+        width: 600px;
+        height: 20px;
+        background-color: #f0f0f0;
+        border-radius: 5px;
+        margin-right: 10px;
+    }
+
+    .progress-bar {
+        height: 100%;
+        border-radius: 5px;
+        transition: width 0.3s ease-in-out;
+        background-color: #45adf3;
+    }
+
+    .value {
+        font-size: 15px;
+    }
+
+    .level0 {
+        width: 0%;
+    }
+
+    .level1 {
+        width: 20%;
+    }
+
+    .level2 {
+        width: 40%;
+    }
+
+    .level3 {
+        width: 60%;
+    }
+
+    .level4 {
+        width: 80%;
+    }
+
+    .level5 {
+        width: 100%;
+    }
+
+
+
+    /* bar detail */
+    .d-container {
+        display: flex;
+        align-items: center;
+        margin-top: 25px;
+    }
+
+    .color-box {
+        width: 20px;
+        height: 20px;
+        background-color: #45adf3;
+        border-radius: 5px;
+        margin-right: 10px;
+    }
+
+    .d-text {
+        margin: 0;
+        font-size: 15px;
+    }
+
+    /* comment */
+    .c-container {
+        display: flex;
+        align-items: flex-start;
+    }
+
+    .short-div {
+        margin-right: 50px;
+    }
+
+    .long-div {
+        flex: 1;
+        text-align: justify;
+    }
+</style>
+
+<div>
+    <h1 class="heading1">Final Report:</h1>
+    <hr>
+    <div>
+        <label class="title">Coachee Name:</label>
+        <div class="content">
+            <p>{{coachee.first_name}} {{coachee.last_name}}</p>
+        </div>
+
+        <hr>
+
+        <label class="title">Coach Name:</label>
+        <div class="content" style="margin-left: 173px;">
+            <a href="/admin/coaches/coach/{{coach.id}}/change/">
+                <p>{{coach.first_name}} {{coach.last_name}}</p>
+            </a>
+        </div>
+
+        <hr>
+
+        <label class="title">Status:</label>
+        <div class="content" style="margin-left: 215px;">
+            <p>{{coachee.engagement_status}}</p>
+        </div>
+    </div>
+
+    <hr>
+
+    <label class="title">Start date:</label>
+    <div class="content" style="margin-left: 190px;">
+        <p>{{engagement.start_date|date:"F d, Y"}}</p>
+    </div>
+
+    <hr>
+
+    <label class="title">End date:</label>
+    <div class="content" style="margin-left: 195px;">
+        <p>{% if engagement.end_date %} {{engagement.end_date|date:"F d, Y"}} {% else %} Pending {% endif %}</p>
+    </div>
+
+    <hr>
+
+    <label class="title">Number of sessions:</label>
+    <div class="content" style="margin-left: 120px;">
+        <p>{{coachee.num_sessions}}</p>
+    </div>
+</div>
+
+<!-- Coach Reviews -->
+<div class="navbar">
+    <div class="navbar-inner">
+        <div class="container-fluid">
+            <h3 class="custom-navbar">Coach Review </h3>
+        </div>
+    </div>
+</div>
+
+<!-- coach bars -->
+
+
+<div class="col-md-6">
+    <p class="p-heading">Feedback from Coach after all sessions were completed</p>
+    {% if coach_review != None %}
+
+    <!-- rate 1 -->
+    <div class="progress-container">
+        <div class="progress-bar-container">
+            <div class="progress-bar level{{coach_review.rate_1}}"></div>
+        </div>
+        <div class="value">{{coach_review.rate_1}}.00</div>
+    </div>
+    <!-- rate 2 -->
+    <div class="progress-container">
+        <div class="progress-bar-container">
+            <div class="progress-bar level{{coach_review.rate_2}}" style="background-color: #3b3d3e;"></div>
+        </div>
+        <div class="value">{{coach_review.rate_2}}.00</div>
+    </div>
+
+    <!-- rate 3 -->
+    <div class="progress-container">
+        <div class="progress-bar-container">
+            <div class="progress-bar level{{coach_review.rate_3}}" style="background-color: #78e252;"></div>
+        </div>
+        <div class="value">{{coach_review.rate_3}}.00</div>
+    </div>
+
+    <!-- rate 4 -->
+    <div class="progress-container">
+        <div class="progress-bar-container">
+            <div class="progress-bar level{{coach_review.rate_4}}" style="background-color: #e4cd4c;"></div>
+        </div>
+        <div class="value">{{coach_review.rate_4}}.00</div>
+    </div>
+
+    {% else %}
+    <div class="progress-container">
+        <div class="progress-bar-container">
+            <div class="progress-bar level0"></div>
+        </div>
+        <div class="value">No review submitted yet.</div>
+    </div>
+    <div class="progress-container">
+        <div class="progress-bar-container">
+            <div class="progress-bar level0"></div>
+        </div>
+        <div class="value">No review submitted yet.</div>
+    </div>
+    <div class="progress-container">
+        <div class="progress-bar-container">
+            <div class="progress-bar level0"></div>
+        </div>
+        <div class="value">No review submitted yet.</div>
+    </div>
+    <div class="progress-container">
+        <div class="progress-bar-container">
+            <div class="progress-bar level0"></div>
+        </div>
+        <div class="value">No review submitted yet.</div>
+    </div>
+    {% endif %}
+    <!-- bar details -->
+
+    <div class="d-container">
+        <div class="color-box"></div>
+        <p class="d-text"> <b> Coach Evaluation:</b> How engaged was the Coachee?</p>
+    </div>
+
+    <div class="d-container">
+        <div class="color-box" style="background-color: #3b3d3e;"></div>
+        <p class="d-text"> <b> Coach Evaluation:</b> How engaged was the coachee's manager/supervisor?</p>
+    </div>
+
+    <div class="d-container">
+        <div class="color-box" style="background-color: #78e252;"></div>
+        <p class="d-text"> <b> Coach Evaluation:</b> How easy was it to work with the coachee on this engagement?</p>
+    </div>
+
+    <div class="d-container">
+        <div class="color-box" style="background-color: #e4cd4c;"></div>
+        <p class="d-text"> <b> Coach Evaluation:</b> To what extent are you satisfied with the support SGI has
+            provided in contracting, providing struture, and providing any logistic assistance on this engagement?</p>
+    </div>
+
+    <!-- end bar details -->
+</div>
+
+<hr style="margin-top: 25px; margin-bottom: 25px;">
+
+
+<div class="c-container">
+    <div class="short-div" style="margin-right: 5px;">
+        <p><b>Final Report:</b></p>
+    </div>
+    <div class="long-div">
+        <p>
+            {% if coach_review != None %} {{coach_review.comment}} {% else %} No review submitted yet.
+            {% endif %}
+        </p>
+    </div>
+</div>
+
+
+
+
+
+
+
+<!-- Coachee Review -->
+<div class="navbar">
+    <div class="navbar-inner">
+        <div class="container-fluid">
+            <h3 class="custom-navbar">Coachee Review </h3>
+        </div>
+    </div>
+</div>
+
+<!-- bar and detail -->
+<div class="col-md-6">
+    <p class="p-heading">Feedback from Coachee after all sessions were completed</p>
+    {% if coachee_review != None %}
+
+    <!-- rate 1 -->
+    <div class="progress-container">
+        <div class="progress-bar-container">
+            <div class="progress-bar level{{coachee_review.rate_1}}"></div>
+        </div>
+        <div class="value">{{coachee_review.rate_1}}.00</div>
+    </div>
+    <!-- rate 2 -->
+    <div class="progress-container">
+        <div class="progress-bar-container">
+            <div class="progress-bar level{{coachee_review.rate_2}}" style="background-color: #3b3d3e;"></div>
+        </div>
+        <div class="value">{{coachee_review.rate_2}}.00</div>
+    </div>
+
+    <!-- rate 3 -->
+    <div class="progress-container">
+        <div class="progress-bar-container">
+            <div class="progress-bar level{{coachee_review.rate_3}}" style="background-color: #78e252;"></div>
+        </div>
+        <div class="value">{{coachee_review.rate_3}}.00</div>
+    </div>
+
+    <!-- rate 4 -->
+    <div class="progress-container">
+        <div class="progress-bar-container">
+            <div class="progress-bar level{{coachee_review.rate_4}}" style="background-color: #e4cd4c;"></div>
+        </div>
+        <div class="value">{{coachee_review.rate_4}}.00</div>
+    </div>
+
+    {% else %}
+    <div class="progress-container">
+        <div class="progress-bar-container">
+            <div class="progress-bar level0"></div>
+        </div>
+        <div class="value">No review submitted yet.</div>
+    </div>
+    <div class="progress-container">
+        <div class="progress-bar-container">
+            <div class="progress-bar level0"></div>
+        </div>
+        <div class="value">No review submitted yet.</div>
+    </div>
+    <div class="progress-container">
+        <div class="progress-bar-container">
+            <div class="progress-bar level0"></div>
+        </div>
+        <div class="value">No review submitted yet.</div>
+    </div>
+    <div class="progress-container">
+        <div class="progress-bar-container">
+            <div class="progress-bar level0"></div>
+        </div>
+        <div class="value">No review submitted yet.</div>
+    </div>
+    {% endif %}
+    <!-- bar details -->
+
+    <div class="d-container">
+        <div class="color-box"></div>
+        <p class="d-text"> <b> Coachee Evaluation:</b> What was your overall satisfaction with your executive coaching
+            experience?</p>
+    </div>
+
+    <div class="d-container">
+        <div class="color-box" style="background-color: #3b3d3e;"></div>
+        <p class="d-text"> <b> Coachee Evaluation:</b> To what degree do you believe you have gained new
+            perspective, knowledge, or skills as a result of the coaching you received?</p>
+    </div>
+
+    <div class="d-container">
+        <div class="color-box" style="background-color: #78e252;"></div>
+        <p class="d-text"> <b> Coachee Evaluation:</b> To what degree do you believe you have experienced a shift
+            in your professional behavior or performance as a result of the coaching you received?</p>
+    </div>
+
+    <div class="d-container">
+        <div class="color-box" style="background-color: #e4cd4c;"></div>
+        <p class="d-text"> <b> Coachee Evaluation:</b> How would you rate your coach's competency and skills as an
+            executive coach?</p>
+    </div>
+
+    <!-- end bar details -->
+</div>
+
+<hr style="margin-top: 25px; margin-bottom: 25px;">
+
+
+<div class="c-container">
+    <div class="short-div" style="margin-right: 5px;">
+        <p><b>Final Report:</b></p>
+    </div>
+    <div class="long-div">
+        <p>
+            {% if coachee_review != None %} {{coachee_review.comment}} {% else %} No review submitted yet.
+            {% endif %}
+        </p>
+    </div>
+</div>
+
+
+
+</div>
+
+
+{% endblock %}

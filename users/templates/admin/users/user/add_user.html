@@ -1,0 +1,28 @@
+{% extends 'admin/base_site.html' %}
+
+{% block content %}
+<div class="add-user-form">
+  <h1>Add User</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div class="field-box">
+      {{ form.first_name.label_tag }}
+      {{ form.first_name }}
+    </div>
+    <div class="field-box">
+      {{ form.last_name.label_tag }}
+      {{ form.last_name }}
+    </div>
+    <div class="field-box">
+      {{ form.email.label_tag }}
+      {{ form.email }}
+    </div>
+    <div class="field-box">
+      {{ form.contact_number.label_tag }}
+      {{ form.contact_number }}
+    </div>
+    <button type="submit">Save and continue editing</button>
+  </form>
+</div>
+{% endblock %}

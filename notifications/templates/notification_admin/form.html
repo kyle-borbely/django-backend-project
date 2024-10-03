@@ -1,0 +1,146 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="/static/admin/css/base.css">
+<link rel="stylesheet" type="text/css" href="/static/admin/css/forms.css">
+<link rel="stylesheet" type="text/css" href="/static/admin/css/responsive.css">
+
+<style>
+    .custom-navbar {
+        background-color: #79aec8;
+        padding: 8px 15px;
+        border-radius: 4px;
+        margin-bottom: 0;
+        color: white;
+    }
+
+    @media (min-width:767px) {
+        .submit-button {
+            text-align: right;
+            background-color: white;
+            border: none;
+            width: 160px;
+            position: relative;
+            left: 305px;
+            margin-top: -30px;
+        }
+
+        .input-btn {
+            width: 125px;
+            height: 30px !important;
+            padding-top: 7.5px !important;
+        }
+
+    }
+
+    @media (max-width:767px) {
+        .text-checkbox {
+            color: black;
+            vertical-align: auto;
+            margin-right: 20px;
+            margin-top: 5px;
+        }
+    }
+
+    @media (min-width:767px) {
+        .submit-button {
+            text-align: right;
+            background-color: white;
+            border: none;
+        }
+    }
+</style>
+
+<div class="navbar">
+    <div class="navbar-inner">
+        <div class="container-fluid">
+            <h3 class="custom-navbar">Send Notification</h3>
+        </div>
+    </div>
+</div>
+
+<div id="content" class="colM">
+    <div id="content-main">
+        <form enctype="multipart/form-data" action="" method="post" id="language_form" novalidate="" name="add-form">
+            {% csrf_token %}
+            <div>
+                <fieldset class="module aligned ">
+                    <div class="form-row field-notification_name">
+                        <div>
+                            <label class="required" for="id_notification_name">Notification Name:</label>
+                            {{form.notification_name}}
+                        </div>
+                    </div>
+
+                    <div class="form-row field-notification_text">
+                        <div>
+                            <label class="required" for="id_notification_text">Notification Text: </label>
+                            {{form.notification_text}}
+                        </div>
+                    </div>
+                    <div class="form-row field-activate_one_time">
+                        <div>
+                            <label class="required" for="file">When it's activate:</label>
+                            <ul id="id_activate" class="checkbox">
+                                {% for value, label in form.activate.field.choices %}
+                                <li>
+                                    <label for="id_{{ value }}">
+                                        <input type="checkbox" name="activate" value="{{ value }}"
+                                            class="custom-checkbox"
+                                            style="margin-left:17px; width:20px !important; height:20px !important"
+                                            id="id_{{ value }}" onclick="handleCheckboxClick('id_{{ value }}')">
+                                        {{ label }}
+                                    </label>
+                                </li>
+                                {% endfor %}
+                            </ul>
+
+                        </div>
+                    </div>
+                    <div class="form-row field-receiver">
+                        <div>
+                            <label class="required" for="id_receiver">Select Receiver:</label>
+                            {{form.receiver}}
+                        </div>
+                    </div>
+                </fieldset>
+
+
+                <div class="submit-row submit-button">
+
+                    <!-- Submit Button -->
+
+                    <input type="submit" class="input-btn" value="Submit" id="upload-btn"
+                        style="background-color: #417690;" style="position: absolute; right: 0;">
+                </div>
+
+            </div>
+        </form>
+    </div>
+
+
+
+    <br class="clear">
+</div>
+<!-- END Content -->
+
+<div id="footer"></div>
+
+
+<div class="navbar">
+    <div class="navbar-inner">
+        <div class="container-fluid">
+            <h3 class="custom-navbar">Notification History</h3>
+        </div>
+    </div>
+</div>
+
+<script>
+    function handleCheckboxClick(checkboxId) {
+        var checkboxes = document.querySelectorAll('.checkbox input[type="checkbox"]');
+
+        checkboxes.forEach(function (checkbox) {
+            if (checkbox.id !== checkboxId) {
+                checkbox.checked = false;
+            }
+        });
+    }
+</script>

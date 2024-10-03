@@ -1,0 +1,264 @@
+{% extends "admin/change_form.html" %}
+{% load static %}
+{% block extrahead %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/admin_style.css' %}">
+{% endblock %}
+{% block content %}
+<form action="" method="post" id="coachee_form" novalidate="">
+    {% csrf_token %}
+    <div class="navbar">
+        <div class="navbar-inner">
+            <div class="container-fluid">
+                <h3 class="custom-navbar">Profile Information</h3>
+            </div>
+        </div>
+    </div>
+    <fieldset class="module aligned">
+        <div class="form-row field-get_profile_picture">
+            <div>
+                <label>Profile Picture:</label>
+                <div class="readonly">
+                    {% if original.get_profile_picture_url %}
+                    <div class="readonly"><img src="{{ original.get_profile_picture_url }}" width="100" height="100">
+                    </div>
+                    {% else %}
+                    <div class="readonly">No image available</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+
+        <div class="form-row field-first_name">
+            <div>
+                <label class="required" for="id_first_name">First name:</label>
+                <input type="text" name="first_name" value="{{ original.first_name }}" class="vTextField"
+                    maxlength="100" required="" id="id_first_name">
+            </div>
+        </div>
+
+        <div class="form-row field-last_name">
+            <div>
+                <label class="required" for="id_last_name">Last name:</label>
+                <input type="text" name="last_name" value="{{ original.last_name }}" class="vTextField" maxlength="100"
+                    required="" id="id_last_name">
+            </div>
+        </div>
+
+        <div class="form-row field-email">
+            <div>
+                <label for="id_email">Email:</label>
+                <p>{{ original.email }}</p>
+            </div>
+        </div>
+
+        <div class="form-row field-title">
+            <div>
+                <label for="id_title">Title:</label>
+                <input type="text" name="title" value="{{ original.title|default_if_none:'' }}" class="vTextField"
+                    maxlength="100" id="id_title">
+            </div>
+        </div>
+
+        <div class="form-row field-department">
+            <div>
+                <label for="id_department">Department:</label>
+                <input type="text" name="department" value="{{ original.department|default_if_none:'' }}"
+                    class="vTextField" maxlength="100" id="id_department">
+            </div>
+        </div>
+
+        <div class="form-row field-city">
+            <div>
+                <label for="id_city">City:</label>
+                <input type="text" name="city" value="{{ original.city|default_if_none:'' }}" class="vTextField"
+                    maxlength="100" id="id_city">
+            </div>
+        </div>
+
+        <div class="form-row field-zip_code">
+            <div>
+                <label for="id_zip_code">Zip code:</label>
+                <input type="text" name="zip_code" value="{{original.zip_code|default_if_none:''}}" class="vTextField"
+                    maxlength="10" id="id_zip_code">
+            </div>
+        </div>
+
+        <div class="form-row field-contact_number">
+            <div>
+                <label for="id_contact_number">Contact number:</label>
+                <input type="tel" name="contact_number" value="{{original.contact_number|default_if_none:''}}"
+                    class="vTextField" maxlength="20" id="id_contact_number">
+            </div>
+        </div>
+
+        <div class="form-row field-client">
+            <div>
+                <label for="id_client">Client:</label>
+                <p>{{ original.client }}</p>
+            </div>
+        </div>
+    </fieldset>
+
+    <div class="navbar">
+        <div class="navbar-inner">
+            <div class="container-fluid">
+                <h3 class="custom-navbar">Engagement Information</h3>
+            </div>
+        </div>
+    </div>
+    <fieldset class="module aligned">
+        {% if engagements %}
+        {% for engagement_info in engagements %}
+        <div class="form-row field-engagement_status">
+            <label for="id_engagement_status">Status:</label>
+            <p>{{ engagement_info.coachee.engagement_status|default:"N/A" }}</p>
+        </div>
+        <div class="form-row field-engagement_info">
+            <label for="id_coach_name">Coach Name:</label>
+
+            <p><a href="/admin/coaches/coach/{{engagement_info.coach_id}}/">{{ engagement_info.coach.first_name }}
+                    {{engagement_info.coach.last_name }}</a></p>
+        </div>
+        <div class="form-row field-engagement_info">
+            <label for="id_start_date">Start Date:</label>
+            <p>{{ engagement_info.start_date|date:"F d, Y" }}</p>
+        </div>
+        <div class="form-row field-engagement_info">
+            <label for="id_end_date">End Date:</label>
+            <p>{{ engagement_info.end_date|date:"F d, Y" }}</p>
+        </div>
+        <div class="form-row field-engagement_info">
+            <label for="id_session_count">Number of Sessions:</label>
+            <p>{{ engagement_info.coachee.num_sessions }}</p>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="from-row field-final_report">
+            <div>
+                <div class="form-row field-coaching_session">
+                    <p for="id_coaching_session">No engagement found.</p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="navbar">
+            <div class="navbar-inner">
+                <div class="container-fluid">
+                    <h3 class="custom-navbar">Scheduled Sessions</h3>
+                </div>
+            </div>
+        </div>
+        {% if scheduled_sessions %}
+        {% for session in scheduled_sessions %}
+        <div class="form-row field-coaching_session">
+            <label for="id_coaching_session">Coaching Session:</label>
+            <p>{{ session.session_date|date:"F d, Y" }} {{ session.start_time|time:"h:i A" }} -
+                {{session.end_time|time:"h:i A" }}</p>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="from-row field-final_report">
+            <div>
+                <div class="form-row field-coaching_session">
+                    <p for="id_coaching_session">No scheduled sessions found.</p>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+
+        <div class="navbar">
+            <div class="navbar-inner">
+                <div class="container-fluid">
+                    <h3 class="custom-navbar">Past Sessions</h3>
+                </div>
+            </div>
+        </div>
+        {% if past_sessions %}
+        {% for session in past_sessions %}
+        <div class="form-row field-coaching_session">
+            <label for="id_coaching_session">Coaching Session:</label>
+            <p>{{ session.session_date|date:"F d, Y" }} {{ session.start_time|time:"h:i A" }} -
+                {{session.end_time|time:"h:i A" }}</p>
+            <div class="button-style">
+                <a href="{% url 'coachees:session-report' session.id %}" class="btn-report">View Report</a>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="from-row field-final_report">
+            <div>
+                <div class="form-row field-coaching_session">
+                    <p for="id_coaching_session">No past sessions found.</p>
+                </div>
+            </div>
+        </div>
+
+        {% endif %}
+        <div class="navbar">
+            <div class="navbar-inner">
+                <div class="container-fluid">
+                    <h3 class="custom-navbar">Final Report</h3>
+                </div>
+            </div>
+        </div>
+        <div class="from-row field-final_report">
+            <div>
+                <div class="form-row field-coaching_session">
+                    {% if past_engagements %}
+                    {% for engagement in past_engagements %}
+                    <label for="id_coaching_session">Coach Final Report:</label>
+                    <p>{{engagement.end_date|date:"F d, Y"}} </p>
+                    <div class="button-style">
+                        <a href="{% url 'coachees:final-report'  engagement.id %}" class="btn-report">View
+                            Report</a>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <p>No final report found.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <!-- <div class="navbar">
+            <div class="navbar-inner">
+                <div class="container-fluid">
+                    <h3 class="custom-navbar">Past Engagement</h3>
+                </div>
+            </div>
+        </div>
+        <div class="from-row field-final_report">
+            <div>
+                <div class="form-row field-coaching_session">
+                    {% if past_engagments %}
+                    {% for engagement in past_engagments %}
+                    <label for="id_coaching_session">Engagement information:</label>
+                    <p>{{engagement.start_date}} - {{engagement.end_date}} </p>
+                    <div class="button-style">
+                        <a href="" class="btn-report">View Report</a>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <label for="id_coaching_session">No past engagements</label>
+                    {% endif %}
+                </div>
+            </div>
+        </div> --> 
+    </fieldset>
+
+    <!-- End of added code -->
+
+    <div class="submit-row">
+        <input type="submit" value="Save" class="default" name="_save">
+        <p class="deletelink-box"><a href="/admin/coachees/coachee/{{original.id}}/delete/"
+                class="deletelink">Delete</a></p>
+        <input type="submit" value="Save and continue editing" name="_continue">
+    </div>
+    <script type="text/javascript" id="django-admin-form-add-constants" src="/static/admin/js/change_form.js"></script>
+    <script type="text/javascript" id="django-admin-prepopulated-fields-constants"
+        src="/static/admin/js/prepopulate_init.js" data-prepopulated-fields="[]"></script>
+</form>
+
+{% endblock %}

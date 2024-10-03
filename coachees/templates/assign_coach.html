@@ -1,0 +1,89 @@
+{% extends "admin/base.html" %}
+{% load static %}
+{% load admin_urls %}
+{% load i18n %}
+{% block title %}
+{{ title }} Assign Coach To a Coachee | {% trans 'Sloan Leaders' %}
+{% endblock %}
+{% block branding %}
+    <div class="header">
+        <div id="branding">
+            <h1 id="site-name"><a href="/admin/">{% trans 'Sloan Leaders' %}</a></h1>
+        </div>
+        <div id="user-tools">
+            {% trans 'WELCOME,' %}
+            <strong>{{ user.username }}.</strong>
+            <a href="/">{% trans 'VIEW SITE' %}</a> /
+            <a href="/admin/password_change/">{% trans 'CHANGE PASSWORD' %}</a> /
+            <a href="/admin/logout/">{% trans 'LOG OUT' %}</a>
+        </div>
+    </div>
+{% endblock %}
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+    › <a href="{% url 'admin:coachees_coachee_changelist' %}">{% trans 'Coachees' %}</a>
+    › <span class="breadcrumb-active">{% trans 'Assign Coach' %}</span>
+</div>
+{% endblock %}
+{% block content %}
+{% if error_message %}
+<ul class="messagelist">
+    <li class="error">{{ error_message }}</li>
+</ul>
+{% endif %}
+<div class="col-md-6 ">
+    <h1 class="heading1" >Assign Coach</h1>
+    <form action="{% url 'coachees:assign_coach' pk=coachee.id %}" method="post">
+
+      {% csrf_token %}
+      <div class="clientname">
+        <label for="client-name" class="client_name" >Client Name:</label>
+        <input type="text" name="client-name" class="client-name" id="client-name" value="{{ coachee.client }}" readonly>
+      </div>
+      <link rel="stylesheet" type="text/css" href="{% static 'css/admin_style.css' %}">
+      <div class="select_coach" >
+        <label for="select-coach" class="select-coach">Select Coaches:</label>
+        <select name="coach_id" class="form-control select-dropdown" id="select-coach" multiple multiselect-search="true" multiselect-select-all="true">
+          {% for coach in assigned_coaches %}
+            <option value="{{ coach.id }}" {% if coach.id in selected_coach_ids %}selected{% endif %}>{{ coach }}</option>
+          {% endfor %}
+          {% for coach in coaches %}
+            {% if coach not in assigned_coaches %}
+              <option value="{{ coach.id }}">{{ coach }}</option>
+            {% endif %}
+          {% endfor %}
+        </select>          
+      </div>
+      <script src="{% static 'js/script.js' %}"></script>
+        <div class="numsession">
+          <label for="num-sessions" class="num-sessions">Number of Sessions:</label>
+          <input type="number" name="num-sessions" class="client-name" id="num-sessions" value="{{ num_sessions }}">
+          <span id="num-sessions-error" style="color: red;"></span>
+        </div>
+      <button type="submit" class="btn-assign-coach" >Assign Coaches</button>
+    </form>
+  </div>
+
+
+<script>
+  document.querySelector('form').addEventListener('submit', function (event) {
+    var numSessionsInput = document.getElementById('num-sessions');
+    var numSessionsValue = parseInt(numSessionsInput.value);
+
+    // Check if the value is 0 or negative
+    if (numSessionsValue <= 0) {
+      event.preventDefault(); // Prevent form submission
+      document.getElementById('num-sessions-error').textContent = 'Number of Sessions must be greater than 0.';
+    } else {
+      // Clear the error message if the input is valid
+      document.getElementById('num-sessions-error').textContent = '';
+    }
+  });
+</script>
+
+{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+{% endblock %}
